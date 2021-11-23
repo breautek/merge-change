@@ -101,6 +101,12 @@ const utils = {
     if (!Array.isArray(path)) {
       return utils.set(obj, utils.splitPath(path, separator), value, doNotReplace);
     }
+    else if (typeof path === 'string') {
+      const pathArray = path.split('.');
+      if (utils.isPrototypePolluted(pathArray[0]))
+        return;
+      return utils.set(obj, pathArray, value, doNotReplace);
+    }
     const currentPath = path[0];
     const currentValue = obj[currentPath];
     if (path.length === 1) {
@@ -384,6 +390,9 @@ const utils = {
       }
     }
     return result;
+  },
+  isPrototypePolluted: function(key) {
+    return ['__proto__', 'constructor', 'prototype'].includes(key);
   }
 };
 
